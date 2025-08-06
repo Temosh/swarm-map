@@ -7,19 +7,47 @@ export const fetchCheckins = async (accessToken: string) => {
   const day = date.getDate().toString().padStart(2, '0');
   const vParam = `${year}${month}${day}`;
 
-  const response = await fetch(
-    `${FOURSQUARE_API_BASE_URL}/users/self/checkins?v=${vParam}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+  let allCheckins: any[] = [];
+  let offset = 0;
+  const limit = 250; // Max limit per request for Foursquare API
+  const maxCheckinsToFetch = 6000; // A reasonable upper limit to prevent infinite loops
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  while (true) {
+    const response = await fetch(
+      `${FOURSQUARE_API_BASE_URL}/users/self/checkins?v=${vParam}&limit=${limit}&offset=${offset}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error('API Response not OK:', response.status, response.statusText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Foursquare API response data:', data); // Log the full response data
+
+    // Check if the expected path exists
+    if (!data || !data.response || !data.response.checkins || !data.response.checkins.items) {
+      console.error('Unexpected API response structure:', data);
+      throw new Error('Unexpected API response structure for checkins.');
+    }
+
+    const currentCheckins = data.response.checkins.items;
+    const totalCount = data.response.checkins.count; // Total count of checkins
+
+    allCheckins = allCheckins.concat(currentCheckins);
+
+    // Break loop if no more checkins or if we've fetched all available
+    if (currentCheckins.length < limit || allCheckins.length >= totalCount || allCheckins.length >= maxCheckinsToFetch) {
+      break;
+    }
+
+    offset += limit;
   }
 
-  const data = await response.json();
-  return data.response.checkins.items;
+  return allCheckins;
 };

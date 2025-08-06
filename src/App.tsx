@@ -41,20 +41,21 @@ function App() {
           if (data.access_token) {
             localStorage.setItem('foursquare_access_token', data.access_token);
             setAccessToken(data.access_token);
+            // Only replace state after successful token acquisition
             window.history.replaceState({}, document.title, '/');
           } else {
             throw new Error('Access token not found in response.');
           }
         } catch (error) {
           console.error('Error exchanging code for token:', error);
-          // Optionally, clear local storage or redirect to login on error
           localStorage.removeItem('foursquare_access_token');
           setAccessToken(null);
+          window.history.replaceState({}, document.title, '/'); // Clear code even on error
         }
       };
       exchangeCodeForToken();
     }
-  }, [accessToken]);
+  }, [accessToken]); // Keep accessToken in dependency array to re-run if it changes
 
   return (
     <Container>
