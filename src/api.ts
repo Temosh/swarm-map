@@ -19,7 +19,7 @@ export const fetchCheckins = async (accessToken: string) => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
 
     if (!response.ok) {
@@ -42,7 +42,11 @@ export const fetchCheckins = async (accessToken: string) => {
     allCheckins = allCheckins.concat(currentCheckins);
 
     // Break loop if no more checkins or if we've fetched all available
-    if (currentCheckins.length < limit || allCheckins.length >= totalCount || allCheckins.length >= maxCheckinsToFetch) {
+    if (
+      currentCheckins.length < limit ||
+      allCheckins.length >= totalCount ||
+      allCheckins.length >= maxCheckinsToFetch
+    ) {
       break;
     }
 

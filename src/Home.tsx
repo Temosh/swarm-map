@@ -21,7 +21,8 @@ interface Checkin {
 }
 
 // Path for LocationOnIcon from Material-UI source
-const LOCATION_ON_SVG_PATH = "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z";
+const LOCATION_ON_SVG_PATH =
+  'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z';
 
 const Home = () => {
   const [checkins, setCheckins] = useState<Checkin[]>([]);
@@ -77,8 +78,12 @@ const Home = () => {
     // Log checkins data and count valid coordinates after state update
     if (checkins.length > 0) {
       console.log('Current checkins state:', checkins);
-      const validCheckinsCount = checkins.filter(c => c.venue?.location?.lat && c.venue?.location?.lng).length;
-      console.log(`Number of checkins with valid coordinates: ${validCheckinsCount} out of ${checkins.length}`);
+      const validCheckinsCount = checkins.filter(
+        (c) => c.venue?.location?.lat && c.venue?.location?.lng,
+      ).length;
+      console.log(
+        `Number of checkins with valid coordinates: ${validCheckinsCount} out of ${checkins.length}`,
+      );
     }
   }, [checkins]);
 
@@ -99,24 +104,29 @@ const Home = () => {
   }
 
   // Calculate map center if checkins are available
-  const mapCenter = checkins.length > 0
-    ? [
-        checkins.reduce((sum, c) => sum + (c.venue?.location?.lat || 0), 0) / checkins.length,
-        checkins.reduce((sum, c) => sum + (c.venue?.location?.lng || 0), 0) / checkins.length,
-      ]
-    : [0, 0];
+  const mapCenter =
+    checkins.length > 0
+      ? [
+          checkins.reduce((sum, c) => sum + (c.venue?.location?.lat || 0), 0) / checkins.length,
+          checkins.reduce((sum, c) => sum + (c.venue?.location?.lng || 0), 0) / checkins.length,
+        ]
+      : [0, 0];
 
   return (
     <Box sx={{ height: '100vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
       <Typography variant="h4" gutterBottom>
         Your Swarm Check-ins
       </Typography>
-      <MapContainer center={mapCenter as L.LatLngExpression} zoom={2} style={{ flexGrow: 1, width: '100%' }}>
+      <MapContainer
+        center={mapCenter as L.LatLngExpression}
+        zoom={2}
+        style={{ flexGrow: 1, width: '100%' }}
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        {checkins.map((checkin) => (
+        {checkins.map((checkin) =>
           checkin.venue?.location?.lat && checkin.venue?.location?.lng ? (
             <Marker
               key={checkin.id}
@@ -131,8 +141,8 @@ const Home = () => {
                 {new Date(checkin.createdAt * 1000).toLocaleString()}
               </Popup>
             </Marker>
-          ) : null
-        ))}
+          ) : null,
+        )}
       </MapContainer>
     </Box>
   );

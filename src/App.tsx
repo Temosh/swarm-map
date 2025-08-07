@@ -5,7 +5,7 @@ import Home from './Home';
 
 function App() {
   const [accessToken, setAccessToken] = useState<string | null>(
-    localStorage.getItem('foursquare_access_token')
+    localStorage.getItem('foursquare_access_token'),
   );
 
   useEffect(() => {
@@ -59,12 +59,7 @@ function App() {
 
   return (
     <Container>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         {accessToken ? <Home /> : <Login />}
       </Box>
     </Container>

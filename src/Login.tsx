@@ -9,7 +9,9 @@ const Login = () => {
     const redirectUri = window.location.origin;
 
     if (!clientId) {
-      setError('Foursquare Client ID is missing. Please add VITE_FOURSQUARE_CLIENT_ID to your .env file.');
+      setError(
+        'Foursquare Client ID is missing. Please add VITE_FOURSQUARE_CLIENT_ID to your .env file.',
+      );
       return;
     }
 
@@ -19,7 +21,11 @@ const Login = () => {
 
   return (
     <Box>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
       <Button variant="contained" onClick={handleLogin}>
         Login with Foursquare
       </Button>
